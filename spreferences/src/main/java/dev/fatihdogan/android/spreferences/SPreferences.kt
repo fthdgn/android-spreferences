@@ -2,6 +2,7 @@ package dev.fatihdogan.android.spreferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
 import java.util.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
@@ -207,6 +208,38 @@ abstract class SPreferences(
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: Date?) {
             editor.putString(key, value?.time.toString())
+        }
+    }
+
+    class ObjectDelegate<T>(private val clazz: Class<T>, private val defValue: T) :
+        SPreferencesReadWriteProperty<T>() {
+        private val gson = Gson()
+        override fun getValue(pref: SharedPreferences, key: String): T {
+            return pref.getString(key, null)?.let {
+                gson.fromJson(it, clazz)
+            } ?: defValue
+        }
+
+        override fun setValue(editor: SharedPreferences.Editor, key: String, value: T) {
+            editor.putString(key, gson.toJson(value))
+        }
+    }
+
+    class NullableObjectDelegate<T>(private val clazz: Class<T>) :
+        SPreferencesReadWriteProperty<T?>() {
+        private val gson = Gson()
+        override fun getValue(pref: SharedPreferences, key: String): T? {
+            return pref.getString(key, null)?.let {
+                gson.fromJson(it, clazz)
+            }
+        }
+
+        override fun setValue(editor: SharedPreferences.Editor, key: String, value: T?) {
+            if (value == null) {
+                editor.putString(key, null)
+            } else {
+                editor.putString(key, gson.toJson(value))
+            }
         }
     }
 }

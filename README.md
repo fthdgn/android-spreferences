@@ -78,6 +78,27 @@ fun demo(preferences: Preferences) {
 }
 ```
 
+## ObjectDelegate
+ObjectDelegate and NullableObjectDelegate converts POJO to string by using Gson and saves it to
+SharedPreferences. ObjectDelegate requires a default value.
+
+```kotlin
+data class Person(val name: String, val surname: String)
+
+class Preferences(context: Context) : SPreferences(context, "NAME", SaveMode.APPLY) {
+    var aPersonProperty by ObjectDelegate(Person::class.java, Person("defName", "defSurname"))
+    var aNullablePersonProperty by NullableObjectDelegate(Person::class.java)
+}
+
+fun demo(preferences: Preferences) {
+    preferences.aPersonProperty = Person("name", "surname")
+    val name = preferences.aPersonProperty.name
+
+    preferences.aNullablePersonProperty = Person("name", "surname")
+    val nullableName = preferences.aNullablePersonProperty?.name
+}
+```
+
 ## Custom delegates
 Custom delegates can be created for unsupported classes.
 
