@@ -106,7 +106,7 @@ abstract class SPreferences(
         }
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: Int?) {
-            editor.putString(key, value.toString())
+            editor.putString(key, value?.toString())
         }
     }
 
@@ -126,7 +126,7 @@ abstract class SPreferences(
         }
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: Float?) {
-            editor.putString(key, value.toString())
+            editor.putString(key, value?.toString())
         }
     }
 
@@ -148,7 +148,7 @@ abstract class SPreferences(
         }
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: Boolean?) {
-            editor.putString(key, value.toString())
+            editor.putString(key, value?.toString())
         }
     }
 
@@ -171,7 +171,7 @@ abstract class SPreferences(
         }
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: Long?) {
-            editor.putString(key, value.toString())
+            editor.putString(key, value?.toString())
         }
     }
 
@@ -207,7 +207,7 @@ abstract class SPreferences(
         }
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: Date?) {
-            editor.putString(key, value?.time.toString())
+            editor.putString(key, value?.time?.toString())
         }
     }
 
@@ -221,7 +221,11 @@ abstract class SPreferences(
         }
 
         override fun setValue(editor: SharedPreferences.Editor, key: String, value: T) {
-            editor.putString(key, gson.toJson(value))
+            val stringValue  = gson.toJson(value)
+            if (stringValue == "null") {
+                throw AnonymousClassSerializationException()
+            }
+            editor.putString(key, stringValue)
         }
     }
 
@@ -243,3 +247,5 @@ abstract class SPreferences(
         }
     }
 }
+
+class AnonymousClassSerializationException: Exception("Anonymous object types cannot serialized")
