@@ -16,7 +16,7 @@ Releases page. For ```SNAPSHOT``` versions use ```{branchname}-SNAPSHOT```
 ```
 dependencies {
     ...
-    implementation 'dev.fatihdogan:android-sharedpreferences:{VERSION}'
+    implementation 'dev.fatihdogan:android-spreferences:{VERSION}'
     ...
 }
 ```
